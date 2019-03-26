@@ -111,10 +111,49 @@ const salesByWeek = [
 // Display the gross profit made on the sale.
 
 const container = document.querySelector("#display-container");
+const inputField = document.createElement("input");
+inputField.placeholder = "Search By Name, Email, or Number";
+inputField.style.width = "190px"
+container.appendChild(inputField);
+const resultsDisplay = document.createElement("section");
+container.appendChild(resultsDisplay);
 const agentDisplay = document.createElement("section");
 agentDisplay.innerHTML = "<h1>Agent List</h1>";
 const vehicleDisplay = document.createElement("section");
 vehicleDisplay.innerHTML = "<h1>Vehicle List</h1>";
+
+const allInfoForAgents = salesByWeek.map(obj => obj.sales_agent)
+const agentAndProfit = salesByWeek.map(obj => [obj.sales_agent, obj.gross_profit]);
+
+inputField.addEventListener("keydown", KeyboardEvent => {
+    if (KeyboardEvent.key === "Enter") {
+        let results = [];
+        const searchTerm = inputField.value
+        agentAndProfit.forEach(agent => {
+            for(key in agent[0]){
+                if(agent[0][key].includes(searchTerm)){
+                    let newObj = {
+                        name: `${agent[0].first_name} ${agent[0].last_name}`,
+                        email: `${agent[0].email}`,
+                        phone: `${agent[0].mobile}`,
+                        profit: `$${agent[1]}`
+                    }
+                    results.push(newObj);
+                    break;
+                }
+            }
+        })
+        resultsDisplay.innerHTML = "<h1>Search Results</h1>";
+        results.forEach(result => {
+        resultsDisplay.innerHTML += `
+        <p><em>Agent Name</em>: ${result.name}</p>
+        <p><em>Email</em>: ${result.email}</p>
+        <p><em>Mobile Number</em>: ${result.phone}</p>
+        <p><em>Profit</em>: ${result.profit}
+        <hr/>`
+    })
+    }
+})
 
 const buildElWithText = (el, txt) => {
     const newEl = document.createElement(el);
